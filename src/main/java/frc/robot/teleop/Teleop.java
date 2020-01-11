@@ -21,5 +21,9 @@ public class Teleop {
         double speed = controller.getY(Hand.kLeft);
         double turn = controller.getX(Hand.kRight);
         drive.drive(speed, turn, true); 
+
+        if (controller.getStickButtonPressed(Hand.kRight)) {
+            drive.gearShift();
+        }
     }
 }

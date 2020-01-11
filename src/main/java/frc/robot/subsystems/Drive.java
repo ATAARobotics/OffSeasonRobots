@@ -10,9 +10,14 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.commands.ReverseSolenoid;
+import frc.robot.commands.SetSolenoid;
+
 
 /**
  * Add your docs here.
@@ -30,16 +35,21 @@ public class Drive extends Subsystem {
 
   DifferentialDrive drive = null;
 
+  DoubleSolenoid gearShift = null;
+
   public Drive() {
-    leftController1 = new CANSparkMax(0, MotorType.kBrushless);
-    leftController2 = new CANSparkMax(1, MotorType.kBrushless);
-    rightController1 = new CANSparkMax(2, MotorType.kBrushless);
-    rightController2 = new CANSparkMax(3, MotorType.kBrushless);
+    leftController1 = new CANSparkMax(1, MotorType.kBrushless);
+    leftController2 = new CANSparkMax(2, MotorType.kBrushless);
+    rightController1 = new CANSparkMax(3, MotorType.kBrushless);
+    rightController2 = new CANSparkMax(4, MotorType.kBrushless);
 
     leftDrive = new SpeedControllerGroup(leftController1, leftController2);
     rightDrive = new SpeedControllerGroup(rightController1, rightController2);
 
     drive = new DifferentialDrive(leftDrive, rightDrive);
+
+    gearShift = new DoubleSolenoid(0, 1);
+
   }
 
   @Override
@@ -55,5 +65,17 @@ public class Drive extends Subsystem {
   
   public void drive(double speed, double turn, boolean squareInputs) {
     drive.arcadeDrive(speed, turn, squareInputs);
+  }
+
+  public void gearShift() {
+    new ReverseSolenoid(gearShift).reverse();
+  }
+
+  public void setHigh() {
+    new SetSolenoid(gearShift, Value.kForward).set();
+  }
+
+  public void setLow() {
+    new SetSolenoid(gearShift, Value.kReverse).set();
   }
 }
