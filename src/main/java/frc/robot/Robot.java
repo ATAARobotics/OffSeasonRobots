@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.subsystems.Drive;
 import frc.robot.teleop.Teleop;
@@ -19,6 +20,8 @@ import frc.robot.teleop.Teleop;
  * project.
  */
 public class Robot extends TimedRobot {
+  private PowerDistributionPanel pdp = new PowerDistributionPanel(1);
+
   private Drive drive = new Drive();
   private Teleop teleop = null;
   /**
