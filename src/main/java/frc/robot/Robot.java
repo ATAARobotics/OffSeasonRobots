@@ -22,7 +22,7 @@ import frc.robot.teleop.Teleop;
  * project.
  */
 public class Robot extends TimedRobot {
-  private PowerDistributionPanel pdp = new PowerDistributionPanel(1);
+  
 
   private Drive drive = new Drive();
   private Teleop teleop = null;
@@ -43,6 +43,11 @@ public class Robot extends TimedRobot {
   }
 
   @Override
+  public void robotPeriodic() {
+    // drive.periodic();
+  }
+
+  @Override
   public void autonomousInit() {
   }
 
@@ -57,6 +62,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    drive.periodic();
     teleop.teleopCyc();
   }
 
@@ -66,6 +72,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
+  }
+
+  @Override
+  public void disabledInit() {
+    drive.log();
   }
 
 }
