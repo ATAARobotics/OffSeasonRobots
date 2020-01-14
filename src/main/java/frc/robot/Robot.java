@@ -9,6 +9,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.Drive;
 import frc.robot.teleop.Teleop;
 
@@ -24,6 +26,9 @@ public class Robot extends TimedRobot {
 
   private Drive drive = new Drive();
   private Teleop teleop = null;
+
+  Ultrasonic ultrasonic = new Ultrasonic(0, 1);
+  Ultrasonic ultrasonic2 = new Ultrasonic(2, 3);
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -31,6 +36,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     teleop = new Teleop(drive);
+    ultrasonic.setAutomaticMode(true);
+    ultrasonic2.setAutomaticMode(true);
+    Shuffleboard.getTab("Example tab").add(ultrasonic);
+    Shuffleboard.getTab("Example tab").add(ultrasonic2);
   }
 
   @Override
