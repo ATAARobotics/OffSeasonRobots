@@ -7,10 +7,16 @@
 
 package frc.robot;
 
+import com.revrobotics.ColorSensorV3;
+
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.logging.Logging;
 import frc.robot.subsystems.Drive;
 import frc.robot.teleop.Teleop;
 
@@ -26,9 +32,11 @@ public class Robot extends TimedRobot {
 
   private Drive drive = new Drive();
   private Teleop teleop = null;
+  private Logging logging = null;
 
   Ultrasonic ultrasonic = new Ultrasonic(0, 1);
   Ultrasonic ultrasonic2 = new Ultrasonic(2, 3);
+  ColorSensorV3 color = new ColorSensorV3(I2C.Port.kOnboard);
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -36,6 +44,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     teleop = new Teleop(drive);
+    logging = new Logging(drive);
     ultrasonic.setAutomaticMode(true);
     ultrasonic2.setAutomaticMode(true);
     Shuffleboard.getTab("Example tab").add(ultrasonic);
@@ -45,6 +54,20 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     // drive.periodic();
+    Color detectingColor = color.getColor();
+
+    double IR = color.getIR();
+    int proximity = color.getProximity();
+
+    drive.printEncoder();
+
+    SmartDashboard.putNumber("Red", detectingColor.red);
+    SmartDashboard.putNumber("Green", detectingColor.green);
+    SmartDashboard.putNumber("Blue", detectingColor.blue);
+    SmartDashboard.putNumber("IR", IR);
+    SmartDashboard.putNumber("Proximity", proximity);
+
+
   }
 
   @Override
@@ -60,10 +83,16 @@ public class Robot extends TimedRobot {
     teleop.teleopInit();
   }
 
+  int i = 0;
   @Override
   public void teleopPeriodic() {
-    drive.periodic();
     teleop.teleopCyc();
+    if (i < 10) {
+      i++;
+    } else {
+      logging.record();
+      i = 0;
+    }
   }
 
   @Override
@@ -76,7 +105,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    drive.log();
+    logging.write();
   }
 
 }
